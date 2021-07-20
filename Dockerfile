@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 FROM debian:buster-slim
+=======
+FROM debian:stable-slim
+>>>>>>> 554968efce5a62b7a9a90527861a91fc54cfe7d6
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
