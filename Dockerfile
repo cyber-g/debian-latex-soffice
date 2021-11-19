@@ -17,10 +17,10 @@ RUN apt-get update \
     wget \
     imagemagick \
     pandoc \
+    ssh-client \
+    zip \
     && apt-get clean    
 
 # https://stackoverflow.com/questions/53377176/change-imagemagick-policy-on-a-dockerfile
 ARG imagemagic_config=/etc/ImageMagick-6/policy.xml
 RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
-
-RUN apt-get install -y ssh-client
