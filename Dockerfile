@@ -28,3 +28,7 @@ RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="coder" rights=
 RUN apt-get install -y pandoc-citeproc
 
 RUN apt-get install -y octave
+
+RUN apt-get install -y poppler-utils python3-pip
+RUN pip3 install pandoc-fignos pandoc-eqnos pandoc-tablenos pandoc-secnos
+
