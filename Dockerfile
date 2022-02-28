@@ -32,3 +32,7 @@ RUN apt-get install -y octave
 RUN apt-get install -y poppler-utils python3-pip
 RUN pip3 install pandoc-fignos pandoc-eqnos pandoc-tablenos pandoc-secnos
 
+
+RUN echo 'deb http://deb.debian.org/debian buster-backports main' >> /etc/apt/sources.list.d/backports.list
+RUN apt-get update
+RUN apt-get install -y python3-cairosvg
