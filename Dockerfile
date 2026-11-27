@@ -1,6 +1,6 @@
-FROM debian:buster-slim
+FROM debian:trixie-slim
 
-RUN echo 'deb http://deb.debian.org/debian buster-backports main' > /etc/apt/sources.list.d/backports.list \
+RUN echo 'deb http://deb.debian.org/debian trixie-backports main' > /etc/apt/sources.list.d/backports.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
     fonts-inconsolata \
@@ -13,9 +13,8 @@ RUN echo 'deb http://deb.debian.org/debian buster-backports main' > /etc/apt/sou
     make \
     octave \
     pandoc \
-    pandoc-citeproc \
+    pipx \
     poppler-utils \
-    python-pygments \
     python3-cairosvg \
     python3-pip \
     python3-pygments \
@@ -29,7 +28,11 @@ RUN echo 'deb http://deb.debian.org/debian buster-backports main' > /etc/apt/sou
     && rm -fr /usr/share/doc/texlive-doc
 
 # https://stackoverflow.com/questions/53377176/change-imagemagick-policy-on-a-dockerfile
-ARG imagemagic_config=/etc/ImageMagick-6/policy.xml
-RUN if [ -f $imagemagic_config ] ; then sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/g' $imagemagic_config ; else echo did not see file $imagemagic_config ; fi
+# The glob covers both the ImageMagick-6 and ImageMagick-7 configuration directories.
+RUN for imagemagic_config in /etc/ImageMagick-*/policy.xml ; do if [ -f "$imagemagic_config" ] ; then sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/g' "$imagemagic_config" ; else echo did not see file "$imagemagic_config" ; fi ; done
 
-RUN pip3 install pandoc-fignos pandoc-eqnos pandoc-tablenos pandoc-secnos
+# Debian enforces PEP 668, so the Python filters go through pipx,
+# with their executables in /usr/local/bin for every user.
+ENV PIPX_HOME=/opt/pipx \
+    PIPX_BIN_DIR=/usr/local/bin
+RUN pipx install pandoc-fignos pandoc-eqnos pandoc-tablenos pandoc-secnos
